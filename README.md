@@ -9,3 +9,11 @@ podem ser alterados. Veja o que você pode fazer com o UToken:
 - Criar tokens seguros
 - Inserir um conteúdo no token
 - Definir tempo de expiração para o token
+
+
+## Atalhos
+
+- [Como usar](#Como-usar)
+  - [Criando um token](#Criando-um-token)
+  - [Decodificando um token](#Decodificando-um-token)
+  - [Tratando exceções](#Tratando-exceções)
