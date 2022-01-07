@@ -3,7 +3,7 @@ import json
 from base64 import urlsafe_b64encode
 from base64 import urlsafe_b64decode
 
-from exceptions import *
+from .exceptions import *
 
 
 def encode(
