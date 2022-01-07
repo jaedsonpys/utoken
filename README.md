@@ -43,3 +43,23 @@ Primeiro passamos como parâmetro para utoken.encode() o conteúdo do token, que
 passamos a chave que vai ser utilizada para codificar. Após isso, temos o nosso token.
 
 A chave que foi usada para codificar o token, também será usada para decodificá-lo.
+
+## Decodificando um token
+
+Agora, vamos decodificar um token. Veja o código abaixo:
+
+```python
+from utoken import decode
+
+# definindo nossa chave
+KEY = 'secret-key'
+token = 'eyJtZXNz...'
+
+# decodificando
+my_decode_token = decode(token, KEY)
+print(my_decode_token)
+
+# > {'message': 'Firlast'}
+```
+
+Pronto! Nosso token foi decodificado. em utoken.decode() passamos como parâmetro o token e a chave utilizada na codificação, simples.
