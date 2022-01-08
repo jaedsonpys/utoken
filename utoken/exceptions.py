@@ -17,5 +17,10 @@ class InvalidTokenError(Base):
         super().__init__('Token inválido.')
 
 
+class ExpiredTokenError(Base):
+    def __init__(self):
+        super().__init__('O token foi expirado.')
+
+
 if __name__ == '__main__':
     raise InvalidKeyError
