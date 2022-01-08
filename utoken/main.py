@@ -1,5 +1,8 @@
 from hashlib import md5
+
 import json
+from datetime import datetime, timedelta
+
 from base64 import urlsafe_b64encode
 from base64 import urlsafe_b64decode
 
@@ -7,7 +10,7 @@ from .exceptions import *
 
 
 def encode(
-        content: [dict, list],
+        content: dict,
         key: str,
 ) -> str:
     """Cria um novo token
@@ -17,6 +20,11 @@ def encode(
     :param key: Chave para a codificação.
     :return: Retorna o token.
     """
+
+    max_time: datetime = content.get('max-time')
+
+    if max_time:
+        content['max-time'] = max_time.strftime('%Y-%m-%d %H-%M-%S')
 
     content_json_bytes = json.dumps(content).encode()
 
@@ -61,10 +69,19 @@ def decode(
 
         # convert content to dict or list
         try:
-            _content_json = json.loads(_decode_content)
+            _content_json: dict = json.loads(_decode_content)
         except json.JSONDecodeError:
             raise InvalidContentTokenError
         else:
+            max_age = _content_json.get('max-time')
+
+            if max_age:
+                _content_json.pop('max-time')
+                max_age_date = datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
+
+                if datetime.now() > max_age_date:
+                    raise ExpiredTokenError
+
             return _content_json
 
     raise InvalidKeyError
@@ -74,7 +91,7 @@ if __name__ == '__main__':
     from os import urandom
 
     KEY = urandom(64).hex()
-    my_token = encode({'name': 'Jaedson'}, KEY)
+    my_token = encode({'name': 'Jaedson', 'max-time': datetime.now() + timedelta(minutes=5)}, KEY)
     my_decoded_token = decode(my_token, KEY)
 
     print(my_token)
