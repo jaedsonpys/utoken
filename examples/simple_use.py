@@ -1,8 +1,8 @@
 from utoken import encode, decode
 from os import urandom
 
-KEY = urandom(64).hex()
-my_token = encode({'name': 'Jaedson'}, KEY)
+KEY = 'secret-key'
+my_token = encode({'message': 'Firlast'}, KEY)
 my_decoded_token = decode(my_token, KEY)
 
 print(my_token)
