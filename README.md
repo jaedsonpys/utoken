@@ -13,10 +13,19 @@ podem ser alterados. Veja o que você pode fazer com o UToken:
 
 ## Atalhos
 
+- [Instalação](#Instalação)
 - [Como usar](#Como-usar)
   - [Criando um token](#Criando-um-token)
   - [Decodificando um token](#Decodificando-um-token)
 - [Licença](#Licença)
+
+# Instalação
+
+Para instalar o UToken, use o gerenciador de pacotes `pip`:
+
+```
+pip install utokeniz
+```
 
 # Como usar
 
