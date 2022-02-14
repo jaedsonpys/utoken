@@ -1,10 +1,8 @@
-from hashlib import md5
-
 import json
+from base64 import urlsafe_b64decode, urlsafe_b64encode
 from datetime import datetime, timedelta
-
-from base64 import urlsafe_b64encode
-from base64 import urlsafe_b64decode
+from hashlib import md5
+from typing import Union
 
 from .exceptions import *
 
@@ -44,7 +42,7 @@ def encode(
 def decode(
         utoken: str,
         key: str
-) -> [dict, list]:
+) -> Union[dict, list]:
     """Decodifica o UToken
     e retorna o conteúdo dele.
 
