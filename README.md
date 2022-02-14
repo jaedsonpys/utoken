@@ -16,7 +16,7 @@ podem ser alterados. Veja o que você pode fazer com o UToken:
 - [Como usar](#Como-usar)
   - [Criando um token](#Criando-um-token)
   - [Decodificando um token](#Decodificando-um-token)
-  - [Tratando exceções](#Tratando-exceções)
+- [Licença](#Licença)
 
 # Como usar
 
@@ -42,7 +42,20 @@ print(my_token)
 Primeiro passamos como parâmetro para utoken.encode() o conteúdo do token, que pode ser um dicionário ou lista, depois,
 passamos a chave que vai ser utilizada para codificar. Após isso, temos o nosso token.
 
-A chave que foi usada para codificar o token, também será usada para decodificá-lo.
+Também podemos adicionar o tempo de expiração do token,veja:
+
+
+```python
+from utoken import encode
+from datetime import datetime, timedelta
+
+max_time = datetime.now() + timedelta(minutes=5)
+
+# codificando
+my_token = encode({'message': 'Firlast', 'max-time': max_time}, 'KEY')
+```
+
+Após o tempo máximo ser atingido, a exceção ```ExpiredTokenError``` será lançada.
 
 ## Decodificando um token
 
@@ -62,4 +75,30 @@ print(my_decode_token)
 # > {'message': 'Firlast'}
 ```
 
-Pronto! Nosso token foi decodificado. em utoken.decode() passamos como parâmetro o token e a chave utilizada na codificação, simples.
+Pronto! Nosso token foi decodificado. Em ```utoken.decode()``` passamos como parâmetro o token e a chave utilizada na codificação, simples.
+
+Se você definiu um tempo de expiração no token, receberá uma exceção ao tentar decodificar o token se o token estiver expirado, para isso,
+faça um tratamento de exceção:
+
+```python
+from utoken import decode
+from utoken import ExpiredTokenError
+
+# definindo nossa chave
+KEY = 'secret-key'
+token = 'eyJtZXNz...'
+
+# decodificando
+try:
+    my_decode_token = decode(token, KEY)
+except ExpiredTokenError:
+    print('O token expirou')
+else:
+    print(my_decode_token)
+```
+
+# Licença
+
+Esse projeto utiliza a licença GNU GPL v3.0.
+
+```made with python by Firlast.```
