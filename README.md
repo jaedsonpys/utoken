@@ -1,5 +1,4 @@
 # UToken - Tokens seguros.
-![BADGE](https://img.shields.io/static/v1?label=status&message=em%20desenvolvimento&color=green)
 ![BADGE](https://img.shields.io/static/v1?label=language&message=python&color=blue)
 
 UToken (ou Unhandleable Token) é uma bilioteca criada para ser
