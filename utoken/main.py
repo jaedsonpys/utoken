@@ -85,6 +85,49 @@ def decode(
     raise InvalidKeyError
 
 
+def decode_without_key(token: str) -> dict:
+    """Decodifica o UToken
+    e retorna o conteúdo dele sem
+    precisar da chave.
+
+    Essa decodificação não garante
+    que o token seja íntegro.
+
+    :param token: Token
+    :type token: str
+    :raises InvalidTokenError: Token inválido
+    :raises InvalidContentTokenError: Conteúdo inválido
+    :raises ExpiredTokenError: Token expirado
+    :return: Retorna o conteúdo do token
+    :rtype: dict
+    """
+
+    token_parts = token.split('.')
+
+    if len(token_parts) < 2 or len(token_parts) > 2:
+        raise InvalidTokenError
+
+    _content, _hash = token_parts
+    _base64_content = str(_content + '==').encode()
+    _decode_content = urlsafe_b64decode(_base64_content).decode()
+
+    try:
+        _content_json: dict = json.loads(_decode_content)
+    except json.JSONDecodeError:
+        raise InvalidContentTokenError
+    else:
+        max_age = _content_json.get('max-time')
+
+        if max_age:
+            _content_json.pop('max-time')
+            max_age_date = datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
+
+            if datetime.now() > max_age_date:
+                raise ExpiredTokenError
+
+    return _content_json
+
+
 if __name__ == '__main__':
     from os import urandom
 
