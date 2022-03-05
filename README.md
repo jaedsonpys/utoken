@@ -48,10 +48,10 @@ print(my_token)
 # > eyJtZXNzYWdlIjogIkZpcmxhc3QifQ.5c99ae8e7ce3a000d5b0c35cb53e9e8f
 ```
 
-Primeiro passamos como parâmetro para utoken.encode() o conteúdo do token, que pode ser um dicionário ou lista, depois,
+Primeiro passamos como parâmetro para `utoken.encode()` o conteúdo do token, que pode ser um dicionário ou lista, depois,
 passamos a chave que vai ser utilizada para codificar. Após isso, temos o nosso token.
 
-Também podemos adicionar o tempo de expiração do token,veja:
+Também podemos adicionar o tempo de expiração do token utilizando a chave `max-time` em nosso `dicionário`, veja:
 
 
 ```python
@@ -64,7 +64,7 @@ max_time = datetime.now() + timedelta(minutes=5)
 my_token = encode({'message': 'Firlast', 'max-time': max_time}, 'KEY')
 ```
 
-Após o tempo máximo ser atingido, a exceção ```ExpiredTokenError``` será lançada.
+Após o tempo máximo ser atingido, a exceção `ExpiredTokenError` será lançada.
 
 ## Decodificando um token
 
@@ -84,7 +84,7 @@ print(my_decode_token)
 # > {'message': 'Firlast'}
 ```
 
-Pronto! Nosso token foi decodificado. Em ```utoken.decode()``` passamos como parâmetro o token e a chave utilizada na codificação, simples.
+Pronto! Nosso token foi decodificado. Em `utoken.decode()` passamos como parâmetro o token e a chave utilizada na codificação, simples.
 
 Se você definiu um tempo de expiração no token, receberá uma exceção ao tentar decodificar o token se o token estiver expirado, para isso,
 faça um tratamento de exceção:
@@ -108,6 +108,9 @@ else:
 
 # Licença
 
-Esse projeto utiliza a licença GNU GPL v3.0.
+    GNU GENERAL PUBLIC LICENSE
+    Version 3, 29 June 2007
 
-```made with python by Firlast.```
+ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
