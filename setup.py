@@ -1,14 +1,16 @@
 from setuptools import setup
+from utoken import __version__
 
 setup(
     name='utokeniz',
     author='Jaedson Silva',
     author_email='imunknowuser@protonmail.com',
-    description='Crie tokens de autenticação íntegros e seguros com UTokeniz.',
-    version='1.1.0',
+    description='Create healthy and secure authentication tokens with UTokeniz.',
+    version=__version__,
     packages=['utoken'],
+    url='https://github.com/jaedsonpys/utoken',
     project_urls={
-        'Código fonte': 'https://github.com/jaedsonpys/utoken'
+        'Source code': 'https://github.com/jaedsonpys/utoken'
     },
-    license='GNU GPL v3.0'
+    license='GPL'
 )
