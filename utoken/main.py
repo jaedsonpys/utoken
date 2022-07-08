@@ -8,12 +8,11 @@ from . import exceptions
 
 
 def encode(content: dict, key: str) -> str:
-    """Cria um novo token
-    UToken.
+    """Create a new token Token.
 
-    :param content: Conteúdo do token.
-    :param key: Chave para a codificação.
-    :return: Retorna o token.
+    :param content: Content of the token.
+    :param key: Key for encoding.
+    :return: Returns the token.
     """
 
     max_time: datetime = content.get('max-time')
@@ -37,12 +36,12 @@ def encode(content: dict, key: str) -> str:
 
 
 def decode(utoken: str, key: str) -> Union[dict, list]:
-    """Decodifica o UToken
-    e retorna o conteúdo dele.
+    """Decode the UToken
+    and returns its contents.
 
     :param utoken: Token UToken.
-    :param key: Chave utilizada na codificação.
-    :return: Retorna o conteúdo do token
+    :param key: Key used in encoding.
+    :return: Returns the content of the token
     """
 
     split_token = utoken.split('.')
@@ -80,19 +79,19 @@ def decode(utoken: str, key: str) -> Union[dict, list]:
 
 
 def decode_without_key(token: str) -> dict:
-    """Decodifica o UToken
-    e retorna o conteúdo dele sem
-    precisar da chave.
+    """Decode the UToken
+    and returns its contents without
+    need the key.
 
-    Essa decodificação não garante
-    que o token seja íntegro.
+    This decoding does not guarantee
+    that the token is healthy.
 
     :param token: Token
     :type token: str
-    :raises InvalidTokenError: Token inválido
-    :raises InvalidContentTokenError: Conteúdo inválido
-    :raises ExpiredTokenError: Token expirado
-    :return: Retorna o conteúdo do token
+    :raises InvalidTokenError: Invalid Token
+    :raises InvalidContentTokenError: Invalid content
+    :raises ExpiredTokenError: Expired Token
+    :return: Returns the content of the token
     :rtype: dict
     """
 
