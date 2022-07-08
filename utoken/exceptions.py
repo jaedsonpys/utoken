@@ -14,29 +14,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-class Base(Exception):
-    pass
+
+class InvalidKeyError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
 
 
-class InvalidKeyError(Base):
-    def __init__(self):
-        super().__init__('Chave inválida.')
+class InvalidContentTokenError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
 
 
-class InvalidContentTokenError(Base):
-    def __init__(self):
-        super().__init__('Conteúdo do token é inválido.')
+class InvalidTokenError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
 
 
-class InvalidTokenError(Base):
-    def __init__(self):
-        super().__init__('Token inválido.')
-
-
-class ExpiredTokenError(Base):
-    def __init__(self):
-        super().__init__('O token foi expirado.')
-
-
-if __name__ == '__main__':
-    raise InvalidKeyError
+class ExpiredTokenError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
