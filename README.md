@@ -1,57 +1,59 @@
-# UToken - Tokens seguros.
+# UToken - Secure tokens.
+
 ![BADGE](https://img.shields.io/static/v1?label=language&message=python&color=blue)
 
-UToken (ou Unhandleable Token) é uma bilioteca criada para ser
-utilizada na geração de tokens seguros e íntegros, ou seja, não
-podem ser alterados. Veja o que você pode fazer com o UToken:
+UToken (or Unhandleable Token) is a library created to be
+used in the generation of safe and sound tokens, that is, not
+can be changed. Here's what you can do with UToken:
 
-- Criar tokens seguros
-- Inserir um conteúdo no token
-- Definir tempo de expiração para o token
+- Create secure tokens
+- Insert a content in the token
+- Set expiration time for token
 
 
-## Atalhos
+## Shortcuts
 
-- [Instalação](#Instalação)
-- [Como usar](#Como-usar)
-  - [Criando um token](#Criando-um-token)
-  - [Decodificando um token](#Decodificando-um-token)
-- [Licença](#Licença)
+- [UToken - Secure tokens.](#utoken---secure-tokens)
+  - [Shortcuts](#shortcuts)
+- [Installation](#installation)
+- [How to use](#how-to-use)
+  - [Creating a token](#creating-a-token)
+  - [Decoding a token](#decoding-a-token)
+- [License](#license)
 
-# Instalação
+# Installation
 
-Para instalar o UToken, use o gerenciador de pacotes `pip`:
+To install UToken, use the `pip` package manager:
 
 ```
 pip install utokeniz
 ```
 
-# Como usar
+# How to use
 
-Aqui vai um breve tutorial sobre como utilizar o UToken de forma simples.
+Here's a short tutorial on how to use UToken in a simple way.
 
-## Criando um token
+## Creating a token
 
-Vamos começar criando um token, veja o código abaixo:
+Let's start by creating a token, see the code below:
 
 ```python
 from utoken import encode
 
-# definindo nossa chave
+# defining our key
 KEY = 'secret-key'
 
-# codificando
+# encoding
 my_token = encode({'message': 'Firlast'}, KEY)
 print(my_token)
 
 # > eyJtZXNzYWdlIjogIkZpcmxhc3QifQ.5c99ae8e7ce3a000d5b0c35cb53e9e8f
 ```
 
-Primeiro passamos como parâmetro para `utoken.encode()` o conteúdo do token, que pode ser um dicionário ou lista, depois,
-passamos a chave que vai ser utilizada para codificar. Após isso, temos o nosso token.
+First we pass as a parameter to `utoken.encode()` the content of the token, which can be a dictionary or list, then
+we pass the key that will be used to encrypt. After that, we have our token.
 
-Também podemos adicionar o tempo de expiração do token utilizando a chave `max-time` em nosso `dicionário`, veja:
-
+We can also add the token expiration time using the `max-time` key in our `dictionary`, see:
 
 ```python
 from utoken import encode
@@ -59,53 +61,53 @@ from datetime import datetime, timedelta
 
 max_time = datetime.now() + timedelta(minutes=5)
 
-# codificando
+# encoding
 my_token = encode({'message': 'Firlast', 'max-time': max_time}, 'KEY')
 ```
 
-Após o tempo máximo ser atingido, a exceção `ExpiredTokenError` será lançada.
+After the maximum time is reached, the `ExpiredTokenError` exception will be thrown.
 
-## Decodificando um token
+## Decoding a token
 
-Agora, vamos decodificar um token. Veja o código abaixo:
+Now, let's decode a token. See the code below:
 
 ```python
 from utoken import decode
 
-# definindo nossa chave
+# defining our key
 KEY = 'secret-key'
 token = 'eyJtZXNz...'
 
-# decodificando
+# decoding
 my_decode_token = decode(token, KEY)
 print(my_decode_token)
 
 # > {'message': 'Firlast'}
 ```
 
-Pronto! Nosso token foi decodificado. Em `utoken.decode()` passamos como parâmetro o token e a chave utilizada na codificação, simples.
+Ready! Our token has been decoded. In `utoken.decode()` we pass as a parameter the token and the key used in the encoding, simple.
 
-Se você definiu um tempo de expiração no token, receberá uma exceção ao tentar decodificar o token se o token estiver expirado, para isso,
-faça um tratamento de exceção:
+If you set an expiration time on the token, you will get an **exception when trying** to decode the token if the token is expired, for that,
+do an exception handling:
 
 ```python
 from utoken import decode
 from utoken import ExpiredTokenError
 
-# definindo nossa chave
+# defining our key
 KEY = 'secret-key'
 token = 'eyJtZXNz...'
 
-# decodificando
+# decoding
 try:
     my_decode_token = decode(token, KEY)
 except ExpiredTokenError:
-    print('O token expirou')
+    print('Token has expired')
 else:
     print(my_decode_token)
 ```
 
-# Licença
+# License
 
     GNU GENERAL PUBLIC LICENSE
     Version 3, 29 June 2007
