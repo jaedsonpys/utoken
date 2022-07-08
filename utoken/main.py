@@ -1,16 +1,13 @@
 import json
 from base64 import urlsafe_b64decode, urlsafe_b64encode
-from datetime import datetime, timedelta
+from datetime import datetime
 from hashlib import md5
 from typing import Union
 
 from . import exceptions
 
 
-def encode(
-        content: dict,
-        key: str,
-) -> str:
+def encode(content: dict, key: str) -> str:
     """Cria um novo token
     UToken.
 
@@ -39,10 +36,7 @@ def encode(
     return utoken
 
 
-def decode(
-        utoken: str,
-        key: str
-) -> Union[dict, list]:
+def decode(utoken: str, key: str) -> Union[dict, list]:
     """Decodifica o UToken
     e retorna o conteúdo dele.
 
@@ -126,14 +120,3 @@ def decode_without_key(token: str) -> dict:
                 raise exceptions.ExpiredTokenError
 
     return _content_json
-
-
-if __name__ == '__main__':
-    from os import urandom
-
-    KEY = urandom(64).hex()
-    my_token = encode({'name': 'Jaedson', 'max-time': datetime.now() + timedelta(minutes=5)}, KEY)
-    my_decoded_token = decode(my_token, KEY)
-
-    print(my_token)
-    print(my_decoded_token)
