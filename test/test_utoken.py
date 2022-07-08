@@ -1,6 +1,10 @@
 import unittest
+import sys
+
+sys.path.insert(0, './')
+
 from utoken import encode, decode
-from utoken import InvalidKeyError, InvalidTokenError
+from utoken.exceptions import InvalidKeyError, InvalidTokenError
 
 
 class TestUtoken(unittest.TestCase):
