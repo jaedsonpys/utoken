@@ -25,13 +25,10 @@ def encode(content: dict, key: str) -> str:
     content_base64 = urlsafe_b64encode(content_json_bytes).decode()
     content_base64 = content_base64.replace('=', '')
 
-    # Hash of: content_base64 + key
     join_key = str(content_base64 + key).encode()
     finally_hash = md5(join_key).hexdigest()
 
-    # finally token
     utoken = '.'.join([content_base64, finally_hash])
-
     return utoken
 
 
@@ -47,35 +44,34 @@ def decode(utoken: str, key: str) -> Union[dict, list]:
     split_token = utoken.split('.')
 
     try:
-        _content, _hash = split_token
+        content, hash = split_token
     except ValueError:
         raise exceptions.InvalidTokenError
 
-    _join_key = str(_content + key).encode()
-    _hash_content = md5(_join_key).hexdigest()
+    join_key = str(content + key).encode()
+    hashcontent = md5(join_key).hexdigest()
 
-    if _hash_content == _hash:
-        _base64_content = str(_content + '==').encode()
-        _decode_content = urlsafe_b64decode(_base64_content).decode()
+    if hashcontent != hash:
+        raise exceptions.InvalidKeyError
 
-        # convert content to dict or list
-        try:
-            _content_json: dict = json.loads(_decode_content)
-        except json.JSONDecodeError:
-            raise exceptions.InvalidContentTokenError
-        else:
-            max_age = _content_json.get('max-time')
+    base64_content = str(content + '==').encode()
+    decode_content = urlsafe_b64decode(base64_content).decode()
 
-            if max_age:
-                _content_json.pop('max-time')
-                max_age_date = datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
+    try:
+        content_json: dict = json.loads(decode_content)
+    except json.JSONDecodeError:
+        raise exceptions.InvalidContentTokenError
 
-                if datetime.now() > max_age_date:
-                    raise exceptions.ExpiredTokenError
+    max_age = content_json.get('max-time')
 
-            return _content_json
+    if max_age:
+        content_json.pop('max-time')
+        max_age_date = datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
 
-    raise exceptions.InvalidKeyError
+        if datetime.now() > max_age_date:
+            raise exceptions.ExpiredTokenError
+
+    return content_json
 
 
 def decode_without_key(token: str) -> dict:
@@ -100,22 +96,22 @@ def decode_without_key(token: str) -> dict:
     if len(token_parts) < 2 or len(token_parts) > 2:
         raise exceptions.InvalidTokenError
 
-    _content, _hash = token_parts
-    _base64_content = str(_content + '==').encode()
-    _decode_content = urlsafe_b64decode(_base64_content).decode()
+    content, hash = token_parts
+    base64_content = str(content + '==').encode()
+    decode_content = urlsafe_b64decode(base64_content).decode()
 
     try:
-        _content_json: dict = json.loads(_decode_content)
+        content_json: dict = json.loads(decode_content)
     except json.JSONDecodeError:
         raise exceptions.InvalidContentTokenError
-    else:
-        max_age = _content_json.get('max-time')
 
-        if max_age:
-            _content_json.pop('max-time')
-            max_age_date = datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
+    max_age = content_json.get('max-time')
 
-            if datetime.now() > max_age_date:
-                raise exceptions.ExpiredTokenError
+    if max_age:
+        content_json.pop('max-time')
+        max_age_date = datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
 
-    return _content_json
+        if datetime.now() > max_age_date:
+            raise exceptions.ExpiredTokenError
+
+    return content_json
