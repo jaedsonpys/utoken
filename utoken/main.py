@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from hashlib import md5
 from typing import Union
 
-from .exceptions import *
+from . import exceptions
 
 
 def encode(
@@ -56,7 +56,7 @@ def decode(
     try:
         _content, _hash = split_token
     except ValueError:
-        raise InvalidTokenError
+        raise exceptions.InvalidTokenError
 
     _join_key = str(_content + key).encode()
     _hash_content = md5(_join_key).hexdigest()
@@ -69,7 +69,7 @@ def decode(
         try:
             _content_json: dict = json.loads(_decode_content)
         except json.JSONDecodeError:
-            raise InvalidContentTokenError
+            raise exceptions.InvalidContentTokenError
         else:
             max_age = _content_json.get('max-time')
 
@@ -78,11 +78,11 @@ def decode(
                 max_age_date = datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
 
                 if datetime.now() > max_age_date:
-                    raise ExpiredTokenError
+                    raise exceptions.ExpiredTokenError
 
             return _content_json
 
-    raise InvalidKeyError
+    raise exceptions.InvalidKeyError
 
 
 def decode_without_key(token: str) -> dict:
@@ -105,7 +105,7 @@ def decode_without_key(token: str) -> dict:
     token_parts = token.split('.')
 
     if len(token_parts) < 2 or len(token_parts) > 2:
-        raise InvalidTokenError
+        raise exceptions.InvalidTokenError
 
     _content, _hash = token_parts
     _base64_content = str(_content + '==').encode()
@@ -114,7 +114,7 @@ def decode_without_key(token: str) -> dict:
     try:
         _content_json: dict = json.loads(_decode_content)
     except json.JSONDecodeError:
-        raise InvalidContentTokenError
+        raise exceptions.InvalidContentTokenError
     else:
         max_age = _content_json.get('max-time')
 
@@ -123,7 +123,7 @@ def decode_without_key(token: str) -> dict:
             max_age_date = datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
 
             if datetime.now() > max_age_date:
-                raise ExpiredTokenError
+                raise exceptions.ExpiredTokenError
 
     return _content_json
 
