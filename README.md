@@ -2,13 +2,11 @@
 
 ![BADGE](https://img.shields.io/static/v1?label=language&message=python&color=blue)
 
-UToken (or Unhandleable Token) is a library created to be
-used in the generation of safe and sound tokens, that is, not
-can be changed. Here's what you can do with UToken:
+UToken (or Unhandleable Token) is a library created to be used in the generation of safe and sound tokens, that is, not can be changed. Here's what you can do with UToken:
 
-- Create secure tokens
-- Insert a content in the token
-- Set expiration time for token
+- Create secure tokens;
+- Insert a content in the token;
+- Set expiration time for token.
 
 
 ## Shortcuts
@@ -50,8 +48,7 @@ print(my_token)
 # > eyJtZXNzYWdlIjogIkZpcmxhc3QifQ.5c99ae8e7ce3a000d5b0c35cb53e9e8f
 ```
 
-First we pass as a parameter to `utoken.encode()` the content of the token, which can be a dictionary or list, then
-we pass the key that will be used to encrypt. After that, we have our token.
+First we pass as a parameter to `utoken.encode()` the content of the token, which can be a dictionary or list, then we pass the key that will be used to encrypt. After that, we have our token.
 
 We can also add the token expiration time using the `max-time` key in our `dictionary`, see:
 
@@ -87,8 +84,7 @@ print(my_decode_token)
 
 Ready! Our token has been decoded. In `utoken.decode()` we pass as a parameter the token and the key used in the encoding, simple.
 
-If you set an expiration time on the token, you will get an **exception when trying** to decode the token if the token is expired, for that,
-do an exception handling:
+If you set an expiration time on the token, you will get an **exception when trying** to decode the token if the token is expired, for that, do an exception handling:
 
 ```python
 from utoken import decode
