@@ -14,8 +14,6 @@ setup(
     version=__version__,
     packages=['utoken'],
     url='https://github.com/jaedsonpys/utoken',
-    project_urls={
-        'Source code': 'https://github.com/jaedsonpys/utoken'
-    },
-    license='GPL'
+    license='GPL',
+    keywords=['token', 'auth', 'json', 'web', 'login', 'secure']
 )
