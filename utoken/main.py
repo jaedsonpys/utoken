@@ -29,6 +29,13 @@ def _has_valid_key(payload: str, key: str, proof_hash: str) -> bool:
     return hash_check == proof_hash
 
 
+def _payload_is_expired(payload: dict):
+    max_age = payload.get('max-time')
+    if max_age:
+        max_age_date = datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
+        return datetime.now() > max_age_date
+
+
 def encode(payload: dict, key: str) -> str:
     """Create a new token Token.
 
@@ -80,14 +87,12 @@ def decode(utoken: str, key: str) -> Union[dict, list]:
     except json.JSONDecodeError:
         raise exceptions.InvalidContentTokenError('Token payload is not convertible to JSON')
 
-    max_age = payload_json.get('max-time')
+    payload_expired = _payload_is_expired(payload_json)
 
-    if max_age:
+    if payload_expired:
+        raise exceptions.ExpiredTokenError('The token has reached the expiration limit')
+    elif payload_expired is False:
         payload_json.pop('max-time')
-        max_age_date = datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
-
-        if datetime.now() > max_age_date:
-            raise exceptions.ExpiredTokenError('The token has reached the expiration limit')
 
     return payload_json
 
