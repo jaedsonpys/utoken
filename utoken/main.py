@@ -23,28 +23,28 @@ from typing import Union
 from . import exceptions
 
 
-def encode(content: dict, key: str) -> str:
+def encode(payload: dict, key: str) -> str:
     """Create a new token Token.
 
-    :param content: Content of the token.
+    :param content: Payload of the token.
     :param key: Key for encoding.
     :return: Returns the token.
     """
 
-    max_time: datetime = content.get('max-time')
+    max_time: datetime = payload.get('max-time')
 
     if max_time:
-        content['max-time'] = max_time.strftime('%Y-%m-%d %H-%M-%S')
+        payload['max-time'] = max_time.strftime('%Y-%m-%d %H-%M-%S')
 
-    content_json_bytes = json.dumps(content).encode()
+    payload_json = json.dumps(payload).encode()
 
-    content_base64 = urlsafe_b64encode(content_json_bytes).decode()
-    content_base64 = content_base64.replace('=', '')
+    payload_b64 = urlsafe_b64encode(payload_json).decode()
+    payload_b64 = payload_b64.replace('=', '')
 
-    join_key = str(content_base64 + key).encode()
-    finally_hash = md5(join_key).hexdigest()
+    joined_data = str(payload_b64 + key).encode()
+    finally_hash = md5(joined_data).hexdigest()
+    utoken = '.'.join([payload_b64, finally_hash])
 
-    utoken = '.'.join([content_base64, finally_hash])
     return utoken
 
 
