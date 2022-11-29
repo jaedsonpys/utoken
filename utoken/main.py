@@ -63,15 +63,14 @@ def decode(utoken: str, key: str) -> Union[dict, list]:
     :return: Returns the content of the token
     """
 
-    split_token = utoken.split('.')
+    token_parts = utoken.split('.')
 
-    try:
-        payload, proof_hash = split_token
-    except ValueError:
+    if len(token_parts) != 2:
         raise exceptions.InvalidTokenError('Token is invalid')
-
-    if not _has_valid_key(payload, key, proof_hash):
-        raise exceptions.InvalidKeyError('The key provided is invalid')
+    else:
+        payload, proof_hash = token_parts
+        if not _has_valid_key(payload, key, proof_hash):
+            raise exceptions.InvalidKeyError('The key provided is invalid')
 
     base64_content = str(payload + '==').encode()
     decode_content = urlsafe_b64decode(base64_content).decode()
