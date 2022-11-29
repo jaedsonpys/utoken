@@ -78,7 +78,7 @@ def decode(utoken: str, key: str) -> Union[dict, list]:
     try:
         payload_json: dict = json.loads(decoded_payload)
     except json.JSONDecodeError:
-        raise exceptions.InvalidContentTokenError('Token content is invalid')
+        raise exceptions.InvalidContentTokenError('Token payload is not convertible to JSON')
 
     max_age = payload_json.get('max-time')
 
