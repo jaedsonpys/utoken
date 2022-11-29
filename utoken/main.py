@@ -111,12 +111,8 @@ def decode(utoken: str, key: str) -> dict:
 
 
 def decode_without_key(token: str) -> dict:
-    """Decode the UToken
-    and returns its contents without
-    need the key.
-
-    This decoding does not guarantee
-    that the token is healthy.
+    """Decodes the token without performing an
+    integrity check, i.e. no secret key is needed.
 
     :param token: Token
     :type token: str
@@ -129,25 +125,23 @@ def decode_without_key(token: str) -> dict:
 
     token_parts = token.split('.')
 
-    if len(token_parts) < 2 or len(token_parts) > 2:
+    if len(token_parts) != 2:
         raise exceptions.InvalidTokenError('Token is invalid')
 
-    content, hash = token_parts
-    base64_content = str(content + '==').encode()
-    decode_content = urlsafe_b64decode(base64_content).decode()
+    payload, proof_hash = token_parts
+    payload_b64 = str(payload + '==').encode()
+    decoded_payload = urlsafe_b64decode(payload_b64).decode()
 
     try:
-        content_json: dict = json.loads(decode_content)
+        payload_json: dict = json.loads(decoded_payload)
     except json.JSONDecodeError:
-        raise exceptions.InvalidContentTokenError('Token content is invalid')
+        raise exceptions.InvalidContentTokenError('Token payload is not convertible to JSON')
 
-    max_age = content_json.get('max-time')
+    payload_expired = _payload_is_expired(payload_json)
 
-    if max_age:
-        content_json.pop('max-time')
-        max_age_date = datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
+    if payload_expired:
+        raise exceptions.ExpiredTokenError('The token has reached the expiration limit')
+    elif payload_expired is False:
+        payload_json.pop('max-time')
 
-        if datetime.now() > max_age_date:
-            raise exceptions.ExpiredTokenError('The token has reached the expiration limit')
-
-    return content_json
+    return payload_json
