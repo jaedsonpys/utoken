@@ -61,7 +61,7 @@ def encode(payload: dict, key: str) -> str:
     return utoken
 
 
-def decode(utoken: str, key: str) -> Union[dict, list]:
+def decode(utoken: str, key: str) -> dict:
     """Decode the UToken and returns its payload.
 
     :param utoken: Encoded UToken
@@ -73,7 +73,7 @@ def decode(utoken: str, key: str) -> Union[dict, list]:
     :raises exceptions.InvalidContentTokenError: Raise if content is invalid
     :raises exceptions.ExpiredTokenError: Raise if token has expired
     :return: Return token payload
-    :rtype: Union[dict, list]
+    :rtype: dict
     """
 
     token_parts = utoken.split('.')
