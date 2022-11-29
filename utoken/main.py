@@ -23,6 +23,12 @@ from typing import Union
 from . import exceptions
 
 
+def _has_valid_key(payload: str, key: str, proof_hash: str) -> bool:
+    joined_data = str(payload + key).encode()
+    hash_check = md5(joined_data).hexdigest()
+    return hash_check == proof_hash
+
+
 def encode(payload: dict, key: str) -> str:
     """Create a new token Token.
 
@@ -60,17 +66,14 @@ def decode(utoken: str, key: str) -> Union[dict, list]:
     split_token = utoken.split('.')
 
     try:
-        content, hash = split_token
+        payload, proof_hash = split_token
     except ValueError:
         raise exceptions.InvalidTokenError('Token is invalid')
 
-    join_key = str(content + key).encode()
-    hashcontent = md5(join_key).hexdigest()
-
-    if hashcontent != hash:
+    if not _has_valid_key(payload, key, proof_hash):
         raise exceptions.InvalidKeyError('The key provided is invalid')
 
-    base64_content = str(content + '==').encode()
+    base64_content = str(payload + '==').encode()
     decode_content = urlsafe_b64decode(base64_content).decode()
 
     try:
