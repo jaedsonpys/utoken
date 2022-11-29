@@ -72,24 +72,24 @@ def decode(utoken: str, key: str) -> Union[dict, list]:
         if not _has_valid_key(payload, key, proof_hash):
             raise exceptions.InvalidKeyError('The key provided is invalid')
 
-    base64_content = str(payload + '==').encode()
-    decode_content = urlsafe_b64decode(base64_content).decode()
+    payload_b64 = str(payload + '==').encode()
+    decoded_payload = urlsafe_b64decode(payload_b64).decode()
 
     try:
-        content_json: dict = json.loads(decode_content)
+        payload_json: dict = json.loads(decoded_payload)
     except json.JSONDecodeError:
         raise exceptions.InvalidContentTokenError('Token content is invalid')
 
-    max_age = content_json.get('max-time')
+    max_age = payload_json.get('max-time')
 
     if max_age:
-        content_json.pop('max-time')
+        payload_json.pop('max-time')
         max_age_date = datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
 
         if datetime.now() > max_age_date:
             raise exceptions.ExpiredTokenError('The token has reached the expiration limit')
 
-    return content_json
+    return payload_json
 
 
 def decode_without_key(token: str) -> dict:
