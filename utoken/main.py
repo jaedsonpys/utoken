@@ -18,7 +18,6 @@ import json
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from datetime import datetime
 from hashlib import md5
-from typing import Union
 
 from . import exceptions
 
@@ -37,11 +36,19 @@ def _payload_is_expired(payload: dict):
 
 
 def encode(payload: dict, key: str) -> str:
-    """Create a new token Token.
+    """Create a new UToken.
 
-    :param content: Payload of the token.
-    :param key: Key for encoding.
-    :return: Returns the token.
+    By adding the `max-time` key and placing a
+    `datetime.timedelta` object in its payload, you
+    define the maximum token lifetime, after which the
+    decoding attempt will throw an exception.
+
+    :param payload: The token payload
+    :type payload: dict
+    :param key: Secret key for token encoding
+    :type key: str
+    :return: Returns the token in string format
+    :rtype: str
     """
 
     max_time: datetime = payload.get('max-time')
