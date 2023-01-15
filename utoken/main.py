@@ -39,7 +39,7 @@ def encode(payload: dict, key: str, expires_in: datetime.timedelta = None) -> st
     """
 
     if expires_in:
-        exp: datetime.datetime = datetime.now() + expires_in
+        exp: datetime.datetime = datetime.datetime.now() + expires_in
         payload['exp'] = exp.strftime('%Y-%m-%d %H-%M-%S')
 
     payload_json = json.dumps(payload).encode()
