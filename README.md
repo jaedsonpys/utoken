@@ -31,14 +31,13 @@ First we pass as a parameter to `utoken.encode()` the payload of the token, whic
 
 ### Define expiration time
 
-We can also add the token **expiration time** using the `max-time` switch in our `dict`, after the maximum time is reached the `ExpiredTokenError` exception will be thrown:
+We can add the token expiration time using the `expires_in` argument of the `utoken.encode` function. After the maximum time is reached the `ExpiredTokenError` exception will be thrown. In the example below, the token will expire in **5 minutes**:
 
 ```python
 from utoken import encode
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-max_time = datetime.now() + timedelta(minutes=5)
-my_token = encode({'message': 'Hello!', 'max-time': max_time}, 'secret-key')
+token = encode({'name': 'Maria'}, 'secret-key', expires_in=timedelta(minutes=5))
 ```
 
 ## Decoding a token
@@ -46,15 +45,17 @@ my_token = encode({'message': 'Hello!', 'max-time': max_time}, 'secret-key')
 Now, let's decode a token. See the code below:
 
 ```python
-from utoken import decode
+import utoken
 
 # defining our key
 KEY = 'secret-key'
-token = 'eyJtZXNz...'
 
-# decoding
-my_decode_token = decode(token, KEY)
-print(my_decode_token)
+# create a token
+token = utoken.encode({'name': 'Maria'}, KEY, expires_in=timedelta(minutes=5))
+
+# decode a token
+payload = utoken.decode(token, KEY)
+print(payload)
 ```
 
 Ready! Our token has been decoded. In `utoken.decode()` we pass as a parameter the token and the key used in the encoding, simple.
