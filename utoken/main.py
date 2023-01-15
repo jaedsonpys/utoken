@@ -71,29 +71,22 @@ def decode(utoken: str, key: str) -> dict:
     :rtype: dict
     """
 
-    token_parts = utoken.split('.')
-
-    if len(token_parts) != 2:
-        raise exceptions.InvalidTokenError('Token is invalid')
-    else:
-        payload, proof_hash = token_parts
-        if not _has_valid_key(payload, key, proof_hash):
-            raise exceptions.InvalidKeyError('The key provided is invalid')
-
-    payload_b64 = str(payload + '==').encode()
-    decoded_payload = urlsafe_b64decode(payload_b64).decode()
-
     try:
-        payload_json: dict = json.loads(decoded_payload)
+        payload, checksum = utoken.split('.')
+
+        if _has_valid_key(payload, key, checksum):
+            payload_b64 = str(payload + '==').encode()
+            decoded_payload = urlsafe_b64decode(payload_b64)
+            payload_json: Union[dict, list] = json.loads(decoded_payload)
+
+            if _payload_is_expired(payload_json):
+                raise exceptions.ExpiredTokenError('The token has reached the expiration limit')
+
+            payload_json.pop('max-time')
     except json.JSONDecodeError:
         raise exceptions.InvalidContentTokenError('Token payload is not convertible to JSON')
-
-    payload_expired = _payload_is_expired(payload_json)
-
-    if payload_expired:
-        raise exceptions.ExpiredTokenError('The token has reached the expiration limit')
-    elif payload_expired is False:
-        payload_json.pop('max-time')
+    except ValueError:
+        raise exceptions.InvalidTokenError('Token is invalid')
 
     return payload_json
 
