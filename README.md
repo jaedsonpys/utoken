@@ -62,10 +62,8 @@ Ready! Our token has been decoded. In `utoken.decode()` we pass as a parameter t
 # License
 
 ```
-GNU GENERAL PUBLIC LICENSE
-Version 3, 29 June 2007
+Copyright © 2023 Jaedson Silva
+BSD-3-Clause License
 ```
 
-Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
-Everyone is permitted to copy and distribute verbatim copies
-of this license document, but changing it is not allowed.
+This project uses the `BSD-3-Clause` license. Please [see the license file](https://github.com/jaedsonpys/utoken/blob/master/LICENSE) to more informations.

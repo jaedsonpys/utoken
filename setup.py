@@ -14,6 +14,6 @@ setup(
     version=__version__,
     packages=['utoken'],
     url='https://github.com/jaedsonpys/utoken',
-    license='GPL',
+    license='BSD-3-Clause',
     keywords=['token', 'auth', 'json', 'web', 'login', 'secure']
 )
