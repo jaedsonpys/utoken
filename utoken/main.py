@@ -2,7 +2,6 @@ import json
 import datetime
 import hashlib
 
-from typing import Union
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 
 from . import exceptions
@@ -19,7 +18,7 @@ def _payload_is_expired(expire_str: str):
     return datetime.datetime.now() > expire_time
 
 
-def encode(payload: Union[dict, list], key: str,
+def encode(payload: dict, key: str,
            expires_in: datetime.timedelta = None) -> str:
     """Creates a new UToken token.
 
@@ -75,7 +74,7 @@ def decode(utoken: str, key: str) -> dict:
         if _has_valid_key(payload, key, checksum):
             payload_b64 = str(payload + '==').encode()
             decoded_payload = urlsafe_b64decode(payload_b64)
-            payload_json: Union[dict, list] = json.loads(decoded_payload)
+            payload_json: dict = json.loads(decoded_payload)
             expire_str = payload_json.get('exp')
 
             if expire_str:
