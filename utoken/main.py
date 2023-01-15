@@ -1,8 +1,8 @@
 import json
 import datetime
+import hashlib
 
 from typing import Union
-from hashlib import md5
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 
 from . import exceptions
@@ -46,13 +46,12 @@ def encode(payload: Union[dict, list], key: str,
         payload['exp'] = exp.strftime('%Y-%m-%d %H-%M-%S')
 
     payload_json = json.dumps(payload).encode()
-
     payload_b64 = urlsafe_b64encode(payload_json).decode()
     payload_b64 = payload_b64.replace('=', '')
 
-    joined_data = str(payload_b64 + key).encode()
-    finally_hash = md5(joined_data).hexdigest()
-    utoken = '.'.join([payload_b64, finally_hash])
+    checksum = str(payload_b64 + key).encode()
+    checksum_hash = hashlib.sha1(checksum).hexdigest()
+    utoken = '.'.join([payload_b64, checksum_hash])
 
     return utoken
 
