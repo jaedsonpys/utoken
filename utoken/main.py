@@ -83,6 +83,8 @@ def decode(utoken: str, key: str) -> dict:
                     raise exceptions.ExpiredTokenError('The token has reached the expiration limit')
 
                 payload_json.pop('exp')
+        else:
+            raise exceptions.InvalidKeyError('Invalid decode key')
     except json.JSONDecodeError:
         raise exceptions.InvalidContentTokenError('Token payload is not convertible to JSON')
     except ValueError:
