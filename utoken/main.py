@@ -8,10 +8,10 @@ from base64 import urlsafe_b64decode, urlsafe_b64encode
 from . import exceptions
 
 
-def _has_valid_key(payload: str, key: str, proof_hash: str) -> bool:
+def _has_valid_key(payload: str, key: str, checksum: str) -> bool:
     joined_data = str(payload + key).encode()
     hash_check = hashlib.sha1(joined_data).hexdigest()
-    return hash_check == proof_hash
+    return hash_check == checksum
 
 
 def _payload_is_expired(payload: Union[dict, list]):
