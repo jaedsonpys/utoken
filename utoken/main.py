@@ -1,5 +1,7 @@
 import json
 import datetime
+
+from typing import Union
 from hashlib import md5
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 
@@ -12,14 +14,15 @@ def _has_valid_key(payload: str, key: str, proof_hash: str) -> bool:
     return hash_check == proof_hash
 
 
-def _payload_is_expired(payload: dict):
+def _payload_is_expired(payload: Union[dict, list]):
     max_age = payload.get('exp')
     if max_age:
         max_age_date = datetime.datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
         return datetime.datetime.now() > max_age_date
 
 
-def encode(payload: dict, key: str, expires_in: datetime.timedelta = None) -> str:
+def encode(payload: Union[dict, list], key: str,
+           expires_in: datetime.timedelta = None) -> str:
     """Creates a new UToken token.
 
     If you pass a `datetime.timedelta` type object
@@ -29,7 +32,7 @@ def encode(payload: dict, key: str, expires_in: datetime.timedelta = None) -> st
     exception will be thrown.
 
     :param payload: Data to be encoded
-    :type payload: dict
+    :type payload: Union[dict, list]
     :param key: Key to encode
     :type key: str
     :param expires_in: Token expiration time, defaults to None
