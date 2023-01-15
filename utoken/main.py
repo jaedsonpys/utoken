@@ -20,18 +20,21 @@ def _payload_is_expired(payload: dict):
 
 
 def encode(payload: dict, key: str, expires_in: datetime.timedelta = None) -> str:
-    """Create a new UToken.
+    """Creates a new UToken token.
 
-    By adding the `max-time` key and placing a
-    `datetime.timedelta` object in its payload, you
-    define the maximum token lifetime, after which the
-    decoding attempt will throw an exception.
+    If you pass a `datetime.timedelta` type object
+    to the `expires_in` argument, you will define the
+    maximum time of the token. If the token expires
+    and you try to decode it, the `ExpiredTokenError`
+    exception will be thrown.
 
-    :param payload: The token payload
+    :param payload: Data to be encoded
     :type payload: dict
-    :param key: Secret key for token encoding
+    :param key: Key to encode
     :type key: str
-    :return: Returns the token in string format
+    :param expires_in: Token expiration time, defaults to None
+    :type expires_in: datetime.timedelta, optional
+    :return: Returns the encoded token
     :rtype: str
     """
 
