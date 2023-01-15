@@ -10,7 +10,7 @@ from . import exceptions
 
 def _has_valid_key(payload: str, key: str, proof_hash: str) -> bool:
     joined_data = str(payload + key).encode()
-    hash_check = md5(joined_data).hexdigest()
+    hash_check = hashlib.sha1(joined_data).hexdigest()
     return hash_check == proof_hash
 
 
