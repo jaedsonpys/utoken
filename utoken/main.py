@@ -14,11 +14,9 @@ def _has_valid_key(payload: str, key: str, checksum: str) -> bool:
     return hash_check == checksum
 
 
-def _payload_is_expired(payload: Union[dict, list]):
-    max_age = payload.get('exp')
-    if max_age:
-        max_age_date = datetime.datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
-        return datetime.datetime.now() > max_age_date
+def _payload_is_expired(expire_str: str):
+    expire_time = datetime.datetime.strptime(expire_str, '%Y-%m-%d %H-%M-%S')
+    return datetime.datetime.now() > expire_time
 
 
 def encode(payload: Union[dict, list], key: str,
@@ -78,11 +76,13 @@ def decode(utoken: str, key: str) -> dict:
             payload_b64 = str(payload + '==').encode()
             decoded_payload = urlsafe_b64decode(payload_b64)
             payload_json: Union[dict, list] = json.loads(decoded_payload)
+            expire_str = payload_json.get('exp')
 
-            if _payload_is_expired(payload_json):
-                raise exceptions.ExpiredTokenError('The token has reached the expiration limit')
+            if expire_str:
+                if _payload_is_expired(expire_str):
+                    raise exceptions.ExpiredTokenError('The token has reached the expiration limit')
 
-            payload_json.pop('max-time')
+                payload_json.pop('exp')
     except json.JSONDecodeError:
         raise exceptions.InvalidContentTokenError('Token payload is not convertible to JSON')
     except ValueError:
