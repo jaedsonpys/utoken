@@ -1,7 +1,7 @@
 import json
-from base64 import urlsafe_b64decode, urlsafe_b64encode
-from datetime import datetime
+import datetime
 from hashlib import md5
+from base64 import urlsafe_b64decode, urlsafe_b64encode
 
 from . import exceptions
 
@@ -13,13 +13,13 @@ def _has_valid_key(payload: str, key: str, proof_hash: str) -> bool:
 
 
 def _payload_is_expired(payload: dict):
-    max_age = payload.get('max-time')
+    max_age = payload.get('exp')
     if max_age:
-        max_age_date = datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
-        return datetime.now() > max_age_date
+        max_age_date = datetime.datetime.strptime(max_age, '%Y-%m-%d %H-%M-%S')
+        return datetime.datetime.now() > max_age_date
 
 
-def encode(payload: dict, key: str) -> str:
+def encode(payload: dict, key: str, expires_in: datetime.timedelta = None) -> str:
     """Create a new UToken.
 
     By adding the `max-time` key and placing a
@@ -35,10 +35,9 @@ def encode(payload: dict, key: str) -> str:
     :rtype: str
     """
 
-    max_time: datetime = payload.get('max-time')
-
-    if max_time:
-        payload['max-time'] = max_time.strftime('%Y-%m-%d %H-%M-%S')
+    if expires_in:
+        exp: datetime.datetime = datetime.now() + expires_in
+        payload['exp'] = exp.strftime('%Y-%m-%d %H-%M-%S')
 
     payload_json = json.dumps(payload).encode()
 
