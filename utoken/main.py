@@ -92,12 +92,12 @@ def decode(utoken: str, key: str) -> dict:
     return payload_json
 
 
-def decode_without_key(token: str) -> dict:
+def decode_without_key(utoken: str) -> dict:
     """Decodes the token without performing an
     integrity check, i.e. no secret key is needed.
 
-    :param token: Token
-    :type token: str
+    :param utoken: Token
+    :type utoken: str
     :raises InvalidTokenError: Invalid Token
     :raises InvalidContentTokenError: Invalid content
     :raises ExpiredTokenError: Expired Token
@@ -105,25 +105,22 @@ def decode_without_key(token: str) -> dict:
     :rtype: dict
     """
 
-    token_parts = token.split('.')
-
-    if len(token_parts) != 2:
-        raise exceptions.InvalidTokenError('Token is invalid')
-
-    payload, proof_hash = token_parts
-    payload_b64 = str(payload + '==').encode()
-    decoded_payload = urlsafe_b64decode(payload_b64).decode()
-
     try:
+        payload, __ = utoken.split('.')
+
+        payload_b64 = str(payload + '==').encode()
+        decoded_payload = urlsafe_b64decode(payload_b64)
         payload_json: dict = json.loads(decoded_payload)
+        expire_str = payload_json.get('exp')
+
+        if expire_str:
+            if _payload_is_expired(expire_str):
+                raise exceptions.ExpiredTokenError('The token has reached the expiration limit')
+
+            payload_json.pop('exp')
     except json.JSONDecodeError:
         raise exceptions.InvalidContentTokenError('Token payload is not convertible to JSON')
-
-    payload_expired = _payload_is_expired(payload_json)
-
-    if payload_expired:
-        raise exceptions.ExpiredTokenError('The token has reached the expiration limit')
-    elif payload_expired is False:
-        payload_json.pop('max-time')
+    except ValueError:
+        raise exceptions.InvalidTokenError('Token is invalid')
 
     return payload_json
