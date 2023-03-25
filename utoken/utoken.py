@@ -15,7 +15,7 @@ def _has_valid_key(payload: str, key: str, checksum: str) -> bool:
 
 def _payload_is_expired(expire_str: str):
     expire_time = datetime.datetime.strptime(expire_str, '%Y-%m-%d %H-%M-%S.%f')
-    return datetime.datetime.now() > expire_time
+    return datetime.datetime.now() >= expire_time
 
 
 def encode(payload: dict, key: str,
