@@ -46,6 +46,7 @@ Now, let's decode a token. See the code below:
 
 ```python
 import utoken
+from datetime import timedelta
 
 # defining our key
 KEY = 'secret-key'
