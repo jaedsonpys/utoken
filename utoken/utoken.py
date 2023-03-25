@@ -14,7 +14,7 @@ def _has_valid_key(payload: str, key: str, checksum: str) -> bool:
 
 
 def _payload_is_expired(expire_str: str):
-    expire_time = datetime.datetime.strptime(expire_str, '%Y-%m-%d %H-%M-%S')
+    expire_time = datetime.datetime.strptime(expire_str, '%Y-%m-%d %H-%M-%S.%f')
     return datetime.datetime.now() > expire_time
 
 
@@ -40,7 +40,7 @@ def encode(payload: dict, key: str,
 
     if expires_in:
         exp: datetime.datetime = datetime.datetime.now() + expires_in
-        payload['exp'] = exp.strftime('%Y-%m-%d %H-%M-%S')
+        payload['exp'] = exp.strftime('%Y-%m-%d %H-%M-%S.%f')
 
     payload_json = json.dumps(payload).encode()
     payload_b64 = urlsafe_b64encode(payload_json).decode()
